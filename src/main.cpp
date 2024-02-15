@@ -1,18 +1,31 @@
 #include <Arduino.h>
+#include <RadioLib.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "pocsag.h"
+
+SX1276 radio = new Module(10, 2, 9, 3);
+PagerClient client(&radio);
+
+const uint32_t DIO2_PIN = 0;
+const uint32_t PAGER_ADDRESS = 0;
+const float f = 439.9875;
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  pager.begin(f, 1200);
+  int state = pager.startReceive(DIO2_PIN, PAGER_ADDRESS);
+  if (state != RADIOLIB_ERR_NONE) {
+    // error
+  }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  if (pager.available() >= 2) {
+    String str;
+    int state = page.readData(str);
+    if (state != RADIOLIB_ERR_NONE) {
+      // error
+    }
+    // print(str)
+  }
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
