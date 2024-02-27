@@ -1,6 +1,7 @@
 #include "common.h"
 
 class Mailbox {
+    public:
     bool storeMessage(message_t message);
     uint8_t getMessageCount();
     message_t getMessage(uint8_t index);

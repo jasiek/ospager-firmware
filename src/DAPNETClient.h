@@ -14,7 +14,7 @@ public:
 
   void begin();
   bool run();
-  void handleMessage(uint8_t *message, uint32_t address);
+  bool handleMessage(uint8_t *message, uint32_t address);
   void setNodename(uint8_t *message);
   void setTime(uint8_t *message);
 

@@ -1,3 +1,5 @@
+#ifndef CONFIG_H
+#define CONFIG_H
 #include <Arduino.h>
 
 const uint8_t MESSAGE_LENGTH = 80;
@@ -9,3 +11,4 @@ const uint32_t DAPNET_addresses[] = {
     8,   // current node
     208, // local time
 };
+#endif

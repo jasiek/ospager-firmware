@@ -29,16 +29,17 @@ bool DAPNETClient::run() {
   }
 }
 
-void DAPNETClient::handleMessage(uint8_t *message, uint32_t address) {
+bool DAPNETClient::handleMessage(uint8_t *message, uint32_t address) {
+  // Return value indicates that there's been an unhandled message
   if (address == 8) {
     // current node
     this->setNodename(message);
-    return;
+    return false;
   }
   if (address == 208) {
     // https://hampager.de/dokuwiki/doku.php?id=blog:uhrzeitsynchronisation_mit_lokaler_zeitzone
     this->setTime(message);
-    return;
+    return false;
   }
   if (unhandledCallback) {
     message_t unhandled;
@@ -47,6 +48,7 @@ void DAPNETClient::handleMessage(uint8_t *message, uint32_t address) {
     memcpy(unhandled.message, message, MESSAGE_LENGTH);
     unhandledCallback(unhandled);
   }
+  return true;
 }
 
 void DAPNETClient::setNodename(uint8_t *message) {
