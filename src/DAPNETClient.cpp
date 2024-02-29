@@ -24,9 +24,11 @@ bool DAPNETClient::run() {
     int state = this->receiver.readData(data, (size_t*)MESSAGE_LENGTH, &address);
     if (state != RADIOLIB_ERR_NONE) {
       // error
+      return false;
     }
     this->handleMessage(data, address);
   }
+  return true;
 }
 
 bool DAPNETClient::handleMessage(uint8_t *message, uint32_t address) {

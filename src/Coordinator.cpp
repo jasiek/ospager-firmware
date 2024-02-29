@@ -1,6 +1,6 @@
 #include "Coordinator.h"
 
-Coordinator::Coordinator(DAPNETClient &client, Mailbox &mailbox) : client(client), mailbox(mailbox), ui(ui)
+Coordinator::Coordinator(DAPNETClient &client, Mailbox &mailbox, UI &ui) : client(client), mailbox(mailbox), ui(ui)
 {
     client.unhandledCallback = std::bind(&Coordinator::handleMessage, this, std::placeholders::_1);
 };

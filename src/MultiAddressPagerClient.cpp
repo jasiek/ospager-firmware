@@ -38,7 +38,7 @@ int16_t MultiAddressPagerClient::startReceive(uint32_t pin, uint32_t *addresses,
   return (state);
 }
 
-int16_t MultiAddressPagerClient::readData(uint8_t *data, size_t *len) {
+int16_t MultiAddressPagerClient::readData(uint8_t *data, size_t *len, uint32_t *addr) {
   // find the correct address
   bool match = false;
   uint8_t framePos = 0;
