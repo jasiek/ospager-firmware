@@ -1,6 +1,11 @@
 #include <Arduino.h>
 #include <RadioLib.h>
 
+// from src/protocols/Pager.cpp
+extern PhysicalLayer* readBitInstance;
+extern uint32_t readBitPin;
+extern void PagerClientReadBit(void);
+
 class MultiAddressPagerClient : public PagerClient {
 public:
   int16_t startReceive(uint32_t pin, uint32_t *addresses, uint8_t length);
