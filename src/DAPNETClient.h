@@ -1,12 +1,12 @@
 #include "MultiAddressPagerClient.h"
-#include "roo_time.h"
 #include "common.h"
 #include "config.h"
+#include <functional>
 
 #define DAPNET_FREQUENCY 439.9875
 #define DIO2_PIN 0
 
-typedef void (*unhandledMessageCallback_t)(message_t);
+typedef std::function<void(message_t)> unhandledMessageCallback_t;
 
 class DAPNETClient {
 public:
