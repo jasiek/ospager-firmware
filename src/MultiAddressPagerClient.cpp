@@ -7,35 +7,7 @@ int16_t MultiAddressPagerClient::startReceive(uint32_t pin, uint32_t *addresses,
   rxAddresses = addresses;
   rxAddressesLen = length;
 
-  // set the carrier frequency
-  int16_t state = phyLayer->setFrequency(baseFreq);
-  RADIOLIB_ASSERT(state);
-
-  // set bitrate
-  state = phyLayer->setBitRate(dataRate);
-  RADIOLIB_ASSERT(state);
-
-  // set frequency deviation to 4.5 khz
-  state = phyLayer->setFrequencyDeviation((float)shiftFreqHz / 1000.0f);
-  RADIOLIB_ASSERT(state);
-
-  // now set up the direct mode reception
-  Module *mod = phyLayer->getMod();
-  mod->hal->pinMode(pin, mod->hal->GpioModeInput);
-
-  // set direct sync word to the frame sync word
-  // the logic here is inverted, because modules like SX1278
-  // assume high frequency to be logic 1, which is opposite to POCSAG
-  if (!inv) {
-    phyLayer->setDirectSyncWord(~RADIOLIB_PAGER_FRAME_SYNC_CODE_WORD, 32);
-  } else {
-    phyLayer->setDirectSyncWord(RADIOLIB_PAGER_FRAME_SYNC_CODE_WORD, 32);
-  }
-
-  phyLayer->setDirectAction(PagerClientReadBit);
-  phyLayer->receiveDirect();
-
-  return (state);
+  this->startReceive(pin, 0, 0);
 }
 
 int16_t MultiAddressPagerClient::readData(uint8_t *data, size_t *len, uint32_t *addr) {
