@@ -12,4 +12,7 @@ class UI {
 
     // incoming notifications
     void newMessageNotification(message_t);
+
+    // errors
+    void displayErroMessage(const char *);
 };

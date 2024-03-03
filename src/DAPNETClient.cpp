@@ -1,18 +1,26 @@
 #include "DAPNETClient.h"
+#include "common.h"
 
 
-DAPNETClient::DAPNETClient(MultiAddressPagerClient &receiver, uint32_t ric) : receiver(receiver),
+DAPNETClient::DAPNETClient(PagerClient &receiver, uint32_t ric) : receiver(receiver),
                                                                               ric(ric),
                                                                               unhandledCallback(NULL)
 {
-  memcpy(this->addresses, DAPNET_addresses, sizeof(DAPNET_addresses));
+  memcpy(this->addresses, DAPNET_addresses, DAPNET_count);
+  memcpy(this->masks, DAPNET_masks, DAPNET_count);
   this->addresses[0] = ric;
 }
 
 // TODO: 2024-02-15 (jps): Add error handling
-void DAPNETClient::begin() {
-  this->receiver.begin(DAPNET_FREQUENCY, 1200);
-  this->receiver.startReceive(DIO2_PIN, this->addresses, sizeof(DAPNET_addresses));
+int16_t DAPNETClient::begin() {
+  int16_t state;
+  state = this->receiver.begin(DAPNET_FREQUENCY, 1200);
+  if (state != RADIOLIB_ERR_NONE) return state;
+
+  state = this->receiver.startReceive(LORA_DIO2, this->addresses, this->masks, DAPNET_count);
+  if (state != RADIOLIB_ERR_NONE) return state;
+
+  return state;
 }
 
 bool DAPNETClient::run() {
@@ -27,8 +35,9 @@ bool DAPNETClient::run() {
       return false;
     }
     this->handleMessage(data, address);
+    return true;
   }
-  return true;
+  return false; 
 }
 
 bool DAPNETClient::handleMessage(uint8_t *message, uint32_t address) {

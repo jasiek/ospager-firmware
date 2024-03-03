@@ -2,7 +2,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
 typedef struct {
   uint32_t timestamp;
   uint32_t address;

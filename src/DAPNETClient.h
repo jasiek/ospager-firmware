@@ -1,26 +1,26 @@
-#include "MultiAddressPagerClient.h"
+#include <RadioLib.h>
 #include "common.h"
 #include "config.h"
 #include <functional>
 
 #define DAPNET_FREQUENCY 439.9875
-#define DIO2_PIN 0
 
 typedef std::function<void(message_t)> unhandledMessageCallback_t;
 
 class DAPNETClient {
 public:
-  DAPNETClient(MultiAddressPagerClient &receiver, uint32_t ric);
+  DAPNETClient(PagerClient &receiver, uint32_t ric);
 
-  void begin();
+  int16_t begin();
   bool run();
   bool handleMessage(uint8_t *message, uint32_t address);
   void setNodename(uint8_t *message);
   void setTime(uint8_t *message);
 
-  MultiAddressPagerClient &receiver;
+  PagerClient &receiver;
   char nodename[16];
   uint32_t ric;
-  uint32_t addresses[sizeof(DAPNET_addresses)];
+  uint32_t addresses[DAPNET_count];
+  uint32_t masks[DAPNET_count];
   unhandledMessageCallback_t unhandledCallback;
 };

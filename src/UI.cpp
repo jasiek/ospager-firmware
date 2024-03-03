@@ -22,3 +22,7 @@ bool UI::actionsPending() {
     // TODO
     return false;
 }
+
+void UI::displayErroMessage(const char *message) {
+    Serial.println(message);
+}
