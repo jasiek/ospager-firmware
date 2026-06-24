@@ -7,4 +7,5 @@ compile_commands.json
 # Editor / IDE
 .vscode/
 .idea/
+.cache/
 .DS_Store
