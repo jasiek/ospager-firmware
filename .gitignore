@@ -1,0 +1,10 @@
+# PlatformIO build output and downloaded dependencies
+.pio/
+
+# Generated compilation database (for editor/intellisense only)
+compile_commands.json
+
+# Editor / IDE
+.vscode/
+.idea/
+.DS_Store
