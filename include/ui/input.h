@@ -40,4 +40,7 @@ class SerialInput {
 
   // CSI escape-sequence parser state.
   uint8_t esc_ = 0;   // 0 = normal, 1 = saw ESC, 2 = saw ESC[
+
+  // Last newline byte seen, to collapse a CRLF/LFCR pair into one Enter.
+  char eolPair_ = 0;
 };

@@ -21,12 +21,25 @@ void SerialInput::update() {
   while (in_.available() > 0) {
     char c = (char)in_.read();
 
+    // Collapse a CRLF/LFCR pair into a single Enter: a terminal that sends
+    // "\r\n" must not look like two presses. Swallow the second byte of a
+    // pair; a non-newline byte ends any pending pair.
+    bool isEol = (c == '\r' || c == '\n');
+    if (esc_ == 0 && isEol) {
+      if (eolPair_ && c != eolPair_) {
+        eolPair_ = 0;   // second half of a \r\n / \n\r pair -> ignore
+      } else {
+        push(InputEvent::Select);
+        eolPair_ = c;
+      }
+      continue;
+    }
+    if (!isEol) eolPair_ = 0;
+
     switch (esc_) {
       case 0:  // normal
         if (c == 0x1b) {
           esc_ = 1;
-        } else if (c == '\r' || c == '\n') {
-          push(InputEvent::Select);
         } else if (c == 'k') {
           push(InputEvent::Up);
         } else if (c == 'j') {
