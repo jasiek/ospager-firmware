@@ -9,7 +9,9 @@ class MessageStore;
 
 class PocsagService {
  public:
-  PocsagService(Clock& clock, MessageStore& store);
+  // Traffic addressed to PAGER_CAPCODE is filed in `messages`; all other
+  // capcodes (rubrics, time broadcasts, other pagers) go to `rubrics`.
+  PocsagService(Clock& clock, MessageStore& messages, MessageStore& rubrics);
 
   // Initialise the SX1278 in FSK/direct mode and start receiving. Returns false
   // on radio failure (with a reason printed to Serial before the UI starts).
@@ -20,5 +22,6 @@ class PocsagService {
 
  private:
   Clock& clock_;
-  MessageStore& store_;
+  MessageStore& messages_;
+  MessageStore& rubrics_;
 };

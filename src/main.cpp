@@ -29,8 +29,9 @@
 
 // ----- Headless core --------------------------------------------------------
 static Clock         g_clock;
-static MessageStore  g_store;
-static PocsagService g_pocsag(g_clock, g_store);
+static MessageStore  g_messages;   // traffic addressed to this pager
+static MessageStore  g_rubrics;    // all other capcodes (broadcast rubrics)
+static PocsagService g_pocsag(g_clock, g_messages, g_rubrics);
 
 // ----- UI -------------------------------------------------------------------
 static SerialSurface g_serialSurface(Serial);
@@ -38,10 +39,12 @@ static OledSurface   g_oledSurface;
 static SerialInput   g_input(Serial);
 static UiManager     g_ui;
 
-static HomeScreen     g_home(g_clock, g_store);
+static HomeScreen     g_home(g_clock, g_messages);
 static MenuScreen     g_mainMenu("Menu");
-static MessagesScreen g_messages(g_store);
-static DetailScreen   g_detail(g_store);
+static MessagesScreen g_messagesScreen(g_messages, "Messages");
+static DetailScreen   g_messagesDetail(g_messages);
+static MessagesScreen g_rubricsScreen(g_rubrics, "Rubrics");
+static DetailScreen   g_rubricsDetail(g_rubrics);
 static MenuScreen     g_diagMenu("Diagnostics");
 static PowerScreen    g_power;
 
@@ -68,12 +71,15 @@ void setup() {
   SPI.begin(PIN_LORA_SCK, PIN_LORA_MISO, PIN_LORA_MOSI, PIN_LORA_CS);
   if (!g_pocsag.begin()) fatal("radio init failed. Halting.");
 
-  // Navigation wiring: Home -> Menu -> {Messages, Diagnostics -> Power}.
+  // Navigation wiring:
+  //   Home -> Menu -> { Messages, Rubrics, Diagnostics -> Power }
   g_home.setMenuScreen(&g_mainMenu);
-  g_mainMenu.addItem("Messages", &g_messages);
+  g_mainMenu.addItem("Messages", &g_messagesScreen);
+  g_mainMenu.addItem("Rubrics", &g_rubricsScreen);
   g_mainMenu.addItem("Diagnostics", &g_diagMenu);
   g_diagMenu.addItem("Power", &g_power);
-  g_messages.setDetailScreen(&g_detail);
+  g_messagesScreen.setDetailScreen(&g_messagesDetail);
+  g_rubricsScreen.setDetailScreen(&g_rubricsDetail);
 
   // Attach surfaces and start at the home screen.
   g_ui.addSurface(&g_serialSurface);
@@ -102,8 +108,9 @@ void loop() {
     g_ui.onTick(millis());
     g_ui.markDirty();
   }
-  if (g_store.revision() != lastRev) {
-    lastRev = g_store.revision();
+  uint32_t rev = g_messages.revision() + g_rubrics.revision();
+  if (rev != lastRev) {
+    lastRev = rev;
     g_ui.markDirty();
   }
 

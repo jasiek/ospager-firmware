@@ -49,8 +49,9 @@ static bool parsePocsagTime(const String& msg, struct tm& out) {
   return true;
 }
 
-PocsagService::PocsagService(Clock& clock, MessageStore& store)
-    : clock_(clock), store_(store) {}
+PocsagService::PocsagService(Clock& clock, MessageStore& messages,
+                             MessageStore& rubrics)
+    : clock_(clock), messages_(messages), rubrics_(rubrics) {}
 
 bool PocsagService::begin() {
   int state = radio.beginFSK();
@@ -92,6 +93,8 @@ void PocsagService::poll() {
     }
   }
 
-  // Record every message.
-  store_.add(addr, clock_.now(), msg);
+  // Route by capcode: this pager's own traffic is a "message"; everything else
+  // is a "rubric". The two stores are otherwise identical.
+  MessageStore& dest = (addr == PAGER_CAPCODE) ? messages_ : rubrics_;
+  dest.add(addr, clock_.now(), msg);
 }

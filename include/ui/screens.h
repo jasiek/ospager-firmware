@@ -53,10 +53,13 @@ class PowerScreen : public Screen {
 
 class DetailScreen;
 
-// Messages: scrollable list of received pager messages.
+// A scrollable list of received messages from one store. Used for both the
+// pager's own Messages and the broadcast Rubrics; the title is the only
+// difference, the navigation/delete logic is identical.
 class MessagesScreen : public Screen {
  public:
-  explicit MessagesScreen(MessageStore& store) : store_(store) {}
+  MessagesScreen(MessageStore& store, const char* title = "Messages")
+      : store_(store), title_(title) {}
   void setDetailScreen(DetailScreen* s) { detail_ = s; }
 
   void onEnter(UiManager& ui) override;
@@ -65,6 +68,7 @@ class MessagesScreen : public Screen {
 
  private:
   MessageStore& store_;
+  const char* title_;
   DetailScreen* detail_ = nullptr;
   int sel_ = 0;   // selected index (0 == newest)
   int top_ = 0;   // first visible index

@@ -28,6 +28,10 @@ constexpr float    POCSAG_FREQ_MHZ = 439.9875f;
 constexpr uint16_t POCSAG_BAUD     = 1200;    // 512 / 1200 / 2400
 constexpr bool     POCSAG_INVERT   = false;
 
+// This pager's own capcode: traffic to it is "Messages"; everything else
+// (rubrics, time broadcasts, other pagers) is filed under "Rubrics".
+constexpr uint32_t PAGER_CAPCODE = 1002374;
+
 // ----- Canonical UI grid ----------------------------------------------------
 // The whole UI is laid out on a fixed character grid so the same screens render
 // identically to the serial terminal and to a graphic display. 21x8 matches a

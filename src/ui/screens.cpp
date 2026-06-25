@@ -83,7 +83,7 @@ void MessagesScreen::render(FrameBuffer& fb) {
   int n = (int)store_.count();
 
   char hdr[24];
-  snprintf(hdr, sizeof(hdr), "Messages %d", n);
+  snprintf(hdr, sizeof(hdr), "%s %d", title_, n);
   fb.putText(0, 0, hdr, STYLE_BOLD);
 
   const int VIS = 6;   // list occupies rows 1..6
@@ -94,7 +94,7 @@ void MessagesScreen::render(FrameBuffer& fb) {
   if (top_ < 0) top_ = 0;
 
   if (n == 0) {
-    fb.putTextCentered(3, "(no messages)");
+    fb.putTextCentered(3, "(empty)");
   } else {
     for (int row = 0; row < VIS; ++row) {
       int idx = top_ + row;
