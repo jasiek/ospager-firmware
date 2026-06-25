@@ -66,6 +66,11 @@ void MessagesScreen::onInput(InputEvent ev, UiManager& ui) {
         ui.push(detail_);
       }
       break;
+    case InputEvent::Delete:
+      // Selection stays put; render() clamps it to the shrunken list, which
+      // lands on the next-older message (or the new last one).
+      if (n > 0) store_.remove((size_t)sel_);
+      break;
     case InputEvent::Back:
     case InputEvent::Left:
       ui.pop();
@@ -114,11 +119,16 @@ void MessagesScreen::render(FrameBuffer& fb) {
     }
   }
 
-  fb.putText(0, 7, "j/k sel  q back", STYLE_DIM);
+  fb.putText(0, 7, "j/k sel  d del  q back", STYLE_DIM);
 }
 
 // -------------------------------------------------------------- DetailScreen
 void DetailScreen::onInput(InputEvent ev, UiManager& ui) {
+  if (ev == InputEvent::Delete) {
+    if (index_ < (int)store_.count()) store_.remove((size_t)index_);
+    ui.pop();   // back to the list, which reflects the shorter store
+    return;
+  }
   if (ev == InputEvent::Back || ev == InputEvent::Left) ui.pop();
 }
 
@@ -160,5 +170,5 @@ void DetailScreen::render(FrameBuffer& fb) {
     pos += take;
   }
 
-  fb.putText(0, 7, "q back", STYLE_DIM);
+  fb.putText(0, 7, "d del  q back", STYLE_DIM);
 }

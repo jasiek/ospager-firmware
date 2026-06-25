@@ -49,10 +49,13 @@ tio /dev/cu.usbserial-XXXX        # or: pio device monitor
 | ↑/↓ or k/j | move selection |
 | Enter or → | select / open |
 | Esc or q | back |
+| d | delete the selected message |
 | Ctrl-L | redraw (use if a reconnected terminal shows a partial screen) |
 
 Home shows the clock, date and sync/traffic status. Enter opens the **Messages**
-list; Enter on a message opens **Detail** (full text); q steps back.
+list; Enter on a message opens **Detail** (full text); q steps back. In the list
+(or in Detail) press **d** to delete the current message; the remaining messages
+keep their order and the selection lands on the next one.
 
 The static frame is drawn once at connect; most terminals reset the board on
 connect (you'll see it repaint), but if you attach without a reset and the
@@ -75,7 +78,7 @@ include/ + src/
   ui/surface.h       Cell / FrameBuffer / Surface interface
   ui/serial_surface.*  ANSI backend (border frame + per-cell diffing)
   ui/oled_surface.*    SSD1306 backend (cell -> 6x8 char, redraw on change)
-  ui/input.*         InputEvent + serial-key decoder (arrows/enter/esc/jkq)
+  ui/input.*         InputEvent + serial-key decoder (arrows/enter/esc/jkdq)
   ui/ui.*            Screen base + UiManager (screen stack, fan-out to surfaces)
   ui/screens.*       HomeScreen / MessagesScreen / DetailScreen
   main.cpp           composition root: wires core + UI, runs the loop

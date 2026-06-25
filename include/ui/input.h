@@ -14,11 +14,12 @@ enum class InputEvent : uint8_t {
   Right,
   Select,   // Enter / OK
   Back,     // Esc / cancel
+  Delete,   // 'd': remove the selected item
   Redraw,   // Ctrl-L: force a full repaint (e.g. after reconnecting a terminal)
 };
 
 // Decodes a serial terminal's byte stream into InputEvents. Arrow keys (CSI
-// sequences), Enter, Esc, and vim-style j/k/q are recognised.
+// sequences), Enter, Esc, and vim-style j/k/d/q are recognised.
 class SerialInput {
  public:
   explicit SerialInput(Stream& in) : in_(in) {}

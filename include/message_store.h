@@ -17,6 +17,10 @@ class MessageStore {
 
   void add(uint32_t capcode, time_t epoch, const String& text);
 
+  // Remove the message at `index` (0 == newest), compacting the ring so the
+  // remaining messages keep their order. No-op if index is out of range.
+  void remove(size_t index);
+
   size_t count() const { return count_; }
   // index 0 == newest. Returns a reference into the ring; valid until next add.
   const PagerMessage& get(size_t index) const;
@@ -25,6 +29,12 @@ class MessageStore {
   uint32_t revision() const { return revision_; }
 
  private:
+  // Physical buffer slot holding logical `index` (0 == newest).
+  size_t slotOf(size_t index) const {
+    size_t newest = (head_ + CAP - 1) % CAP;
+    return (newest + CAP - (index % CAP)) % CAP;
+  }
+
   PagerMessage buf_[CAP];
   size_t   head_ = 0;       // index of the next slot to write
   size_t   count_ = 0;
