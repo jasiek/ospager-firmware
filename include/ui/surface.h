@@ -70,4 +70,7 @@ class Surface {
  public:
   virtual ~Surface() {}
   virtual void render(const FrameBuffer& fb) = 0;
+  // Force a full repaint on the next render (e.g. a terminal reconnected and
+  // missed the static frame). Default: no-op.
+  virtual void reset() {}
 };

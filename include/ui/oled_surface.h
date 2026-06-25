@@ -15,6 +15,7 @@ class OledSurface : public Surface {
   // Initialise the panel. Returns false if no SSD1306 is present.
   bool begin();
 
+  void reset() override { full_ = true; }   // force a full redraw next render
   void render(const FrameBuffer& fb) override;
 
  private:

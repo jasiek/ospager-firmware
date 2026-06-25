@@ -37,6 +37,8 @@ void SerialInput::update() {
           push(InputEvent::Right);
         } else if (c == 'q') {
           push(InputEvent::Back);
+        } else if (c == 0x0c) {   // Ctrl-L
+          push(InputEvent::Redraw);
         }
         break;
 

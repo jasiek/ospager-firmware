@@ -14,8 +14,9 @@ class SerialSurface : public Surface {
   explicit SerialSurface(Print& out) : out_(out) {}
 
   // Clear the terminal, draw the frame, hide the cursor, force a full repaint.
-  void begin();
+  void begin() { reset(); }
 
+  void reset() override;
   void render(const FrameBuffer& fb) override;
 
  private:

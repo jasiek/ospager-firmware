@@ -49,9 +49,14 @@ tio /dev/cu.usbserial-XXXX        # or: pio device monitor
 | ↑/↓ or k/j | move selection |
 | Enter or → | select / open |
 | Esc or q | back |
+| Ctrl-L | redraw (use if a reconnected terminal shows a partial screen) |
 
 Home shows the clock, date and sync/traffic status. Enter opens the **Messages**
 list; Enter on a message opens **Detail** (full text); q steps back.
+
+The static frame is drawn once at connect; most terminals reset the board on
+connect (you'll see it repaint), but if you attach without a reset and the
+screen looks partial, press **Ctrl-L**.
 
 ## Architecture
 

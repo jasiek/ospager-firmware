@@ -21,7 +21,7 @@ void SerialSurface::emitStyle(uint8_t style) {
   curStyle_ = style;
 }
 
-void SerialSurface::begin() {
+void SerialSurface::reset() {
   out_.print("\033[?25l");   // hide cursor
   out_.print("\033[2J");     // clear screen
   curStyle_ = 0xFF;

@@ -14,6 +14,7 @@ enum class InputEvent : uint8_t {
   Right,
   Select,   // Enter / OK
   Back,     // Esc / cancel
+  Redraw,   // Ctrl-L: force a full repaint (e.g. after reconnecting a terminal)
 };
 
 // Decodes a serial terminal's byte stream into InputEvents. Arrow keys (CSI

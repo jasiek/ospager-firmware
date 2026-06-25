@@ -23,10 +23,19 @@ Screen* UiManager::top() const {
 }
 
 void UiManager::onInput(InputEvent ev) {
+  if (ev == InputEvent::Redraw) {
+    redraw();
+    return;
+  }
   if (Screen* s = top()) {
     s->onInput(ev, *this);
     markDirty();
   }
+}
+
+void UiManager::redraw() {
+  for (uint8_t i = 0; i < surfaceCount_; ++i) surfaces_[i]->reset();
+  markDirty();
 }
 
 void UiManager::onTick(uint32_t nowMs) {

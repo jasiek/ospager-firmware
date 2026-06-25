@@ -28,6 +28,7 @@ class UiManager {
 
   void onInput(InputEvent ev);
   void onTick(uint32_t nowMs);
+  void redraw();   // force every surface to fully repaint
 
   void markDirty() { dirty_ = true; }
   bool dirty() const { return dirty_; }
