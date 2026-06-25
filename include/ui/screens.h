@@ -9,11 +9,11 @@
 class Clock;
 class MessageStore;
 
-// Home: clock, date and sync/traffic status.
+// Home: clock, date and sync/traffic status. Any key opens the main menu.
 class HomeScreen : public Screen {
  public:
   HomeScreen(Clock& clock, MessageStore& store) : clock_(clock), store_(store) {}
-  void setMessagesScreen(Screen* s) { messages_ = s; }
+  void setMenuScreen(Screen* s) { menu_ = s; }
 
   void onInput(InputEvent ev, UiManager& ui) override;
   void render(FrameBuffer& fb) override;
@@ -21,7 +21,34 @@ class HomeScreen : public Screen {
  private:
   Clock& clock_;
   MessageStore& store_;
-  Screen* messages_ = nullptr;
+  Screen* menu_ = nullptr;
+};
+
+// Generic vertical menu: a title and a list of label -> target-screen items.
+// Up/Down move the highlight, Select/Right opens the item, Back/Left pops.
+class MenuScreen : public Screen {
+ public:
+  explicit MenuScreen(const char* title) : title_(title) {}
+  // Items render on rows 2..6, so at most 5 fit beneath the title.
+  void addItem(const char* label, Screen* target);
+
+  void onInput(InputEvent ev, UiManager& ui) override;
+  void render(FrameBuffer& fb) override;
+
+ private:
+  static constexpr uint8_t MAX_ITEMS = 5;
+  const char* title_;
+  const char* labels_[MAX_ITEMS];
+  Screen*     targets_[MAX_ITEMS];
+  uint8_t     count_ = 0;
+  int         sel_ = 0;
+};
+
+// Power: live AXP192 current readings (discharge / charge / VBUS in).
+class PowerScreen : public Screen {
+ public:
+  void onInput(InputEvent ev, UiManager& ui) override;
+  void render(FrameBuffer& fb) override;
 };
 
 class DetailScreen;

@@ -52,10 +52,12 @@ tio /dev/cu.usbserial-XXXX        # or: pio device monitor
 | d | delete the selected message |
 | Ctrl-L | redraw (use if a reconnected terminal shows a partial screen) |
 
-Home shows the clock, date and sync/traffic status. Enter opens the **Messages**
-list; Enter on a message opens **Detail** (full text); q steps back. In the list
-(or in Detail) press **d** to delete the current message; the remaining messages
-keep their order and the selection lands on the next one.
+Home shows the clock, date and sync/traffic status. **Any key** opens the main
+**Menu** (Messages, Diagnostics). **Messages** is the scrollable list; Enter on a
+message opens **Detail** (full text); q steps back. In the list (or in Detail)
+press **d** to delete the current message; the remaining messages keep their
+order and the selection lands on the next one. **Diagnostics → Power** shows the
+live AXP192 currents (battery discharge, battery charge, and VBUS input).
 
 The static frame is drawn once at connect; most terminals reset the board on
 connect (you'll see it repaint), but if you attach without a reset and the
@@ -71,7 +73,7 @@ tests) is a new `Surface`, and a new view is a new `Screen`.
 ```
 include/ + src/
   board.h            pin map + UI grid size (the per-board file)
-  power.*            AXP192 bring-up (LoRa rail)
+  power.*            AXP192 bring-up (LoRa rail) + current readings (powerRead)
   time_sync.*        Clock: RTC kept in UTC, shown via DISPLAY_TZ (DST-aware)
   message_store.*    ring buffer of recent messages (revision counter)
   pocsag_service.*   owns radio+pager; decodes, syncs clock, stores messages

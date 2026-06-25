@@ -39,8 +39,11 @@ static SerialInput   g_input(Serial);
 static UiManager     g_ui;
 
 static HomeScreen     g_home(g_clock, g_store);
+static MenuScreen     g_mainMenu("Menu");
 static MessagesScreen g_messages(g_store);
 static DetailScreen   g_detail(g_store);
+static MenuScreen     g_diagMenu("Diagnostics");
+static PowerScreen    g_power;
 
 static void fatal(const char* msg) {
   Serial.println(msg);
@@ -65,8 +68,11 @@ void setup() {
   SPI.begin(PIN_LORA_SCK, PIN_LORA_MISO, PIN_LORA_MOSI, PIN_LORA_CS);
   if (!g_pocsag.begin()) fatal("radio init failed. Halting.");
 
-  // Navigation wiring.
-  g_home.setMessagesScreen(&g_messages);
+  // Navigation wiring: Home -> Menu -> {Messages, Diagnostics -> Power}.
+  g_home.setMenuScreen(&g_mainMenu);
+  g_mainMenu.addItem("Messages", &g_messages);
+  g_mainMenu.addItem("Diagnostics", &g_diagMenu);
+  g_diagMenu.addItem("Power", &g_power);
   g_messages.setDetailScreen(&g_detail);
 
   // Attach surfaces and start at the home screen.

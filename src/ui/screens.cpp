@@ -5,14 +5,13 @@
 
 #include "board.h"
 #include "message_store.h"
+#include "power.h"
 #include "time_sync.h"
 
 // ---------------------------------------------------------------- HomeScreen
 void HomeScreen::onInput(InputEvent ev, UiManager& ui) {
-  if (messages_ && (ev == InputEvent::Down || ev == InputEvent::Select ||
-                    ev == InputEvent::Right)) {
-    ui.push(messages_);
-  }
+  // Any key opens the main menu.
+  if (menu_) ui.push(menu_);
 }
 
 void HomeScreen::render(FrameBuffer& fb) {
@@ -171,4 +170,72 @@ void DetailScreen::render(FrameBuffer& fb) {
   }
 
   fb.putText(0, 7, "d del  q back", STYLE_DIM);
+}
+
+// ---------------------------------------------------------------- MenuScreen
+void MenuScreen::addItem(const char* label, Screen* target) {
+  if (count_ >= MAX_ITEMS) return;
+  labels_[count_]  = label;
+  targets_[count_] = target;
+  count_++;
+}
+
+void MenuScreen::onInput(InputEvent ev, UiManager& ui) {
+  switch (ev) {
+    case InputEvent::Up:
+      if (sel_ > 0) sel_--;
+      break;
+    case InputEvent::Down:
+      if (sel_ < (int)count_ - 1) sel_++;
+      break;
+    case InputEvent::Select:
+    case InputEvent::Right:
+      if (count_ > 0) ui.push(targets_[sel_]);
+      break;
+    case InputEvent::Back:
+    case InputEvent::Left:
+      ui.pop();
+      break;
+    default:
+      break;
+  }
+}
+
+void MenuScreen::render(FrameBuffer& fb) {
+  fb.putText(0, 0, title_, STYLE_BOLD);
+  fb.fillRow(1, '-');
+
+  if (sel_ < 0) sel_ = 0;
+  if (sel_ > (int)count_ - 1) sel_ = (count_ > 0) ? count_ - 1 : 0;
+
+  for (uint8_t i = 0; i < count_; ++i) {
+    uint8_t row = 2 + i;
+    bool selected = (i == sel_);
+    if (selected) fb.fillRow(row, ' ', STYLE_INVERSE);
+    fb.putText(0, row, labels_[i], selected ? STYLE_INVERSE : STYLE_NORMAL);
+  }
+
+  fb.putText(0, 7, "j/k sel  q back", STYLE_DIM);
+}
+
+// --------------------------------------------------------------- PowerScreen
+void PowerScreen::onInput(InputEvent ev, UiManager& ui) {
+  if (ev == InputEvent::Back || ev == InputEvent::Left) ui.pop();
+}
+
+void PowerScreen::render(FrameBuffer& fb) {
+  PowerReadings p = powerRead();
+
+  fb.putText(0, 0, "Power", STYLE_BOLD);
+  fb.fillRow(1, '-');
+
+  char line[24];
+  snprintf(line, sizeof(line), "Discharge %6.1f mA", p.dischargeMa);
+  fb.putText(0, 3, line);
+  snprintf(line, sizeof(line), "Charge    %6.1f mA", p.chargeMa);
+  fb.putText(0, 4, line);
+  snprintf(line, sizeof(line), "VBUS in   %6.1f mA", p.vbusMa);
+  fb.putText(0, 5, line);
+
+  fb.putText(0, 7, "q back", STYLE_DIM);
 }
