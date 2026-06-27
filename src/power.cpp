@@ -38,5 +38,10 @@ PowerReadings powerRead() {
 }
 
 void powerOff() {
+  // The blue CHGLED shares the OFF_CTL register with the shutdown bit and is
+  // driven by the charge controller, not a switched rail, so shutdown() alone
+  // leaves it lit while the battery keeps the PMU alive. Force it off first;
+  // the setting is retained in the same register across the shutdown.
+  PMU.setChargingLedMode(XPOWERS_CHG_LED_OFF);
   PMU.shutdown();
 }
