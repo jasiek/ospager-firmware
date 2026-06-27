@@ -53,13 +53,15 @@ tio /dev/cu.usbserial-XXXX        # or: pio device monitor
 | Ctrl-L | redraw (use if a reconnected terminal shows a partial screen) |
 
 Home shows the clock, date and sync/traffic status. **Any key** opens the main
-**Menu** (Messages, Rubrics, Diagnostics). **Messages** holds traffic addressed
-to this pager's own capcode (`1002374`); **Rubrics** holds everything else
-(broadcast rubrics, time messages, other pagers). Both are the same scrollable
-list/detail UI: Enter on an entry opens **Detail** (full text), q steps back,
-and **d** deletes the selected entry (the rest keep their order and the
-selection lands on the next one). **Diagnostics → Power** shows the live AXP192
-currents (battery discharge, battery charge, and VBUS input).
+**Menu** (Messages, Rubrics, Diagnostics, Operations). **Messages** holds
+traffic addressed to this pager's own capcode (`1002374`); **Rubrics** holds
+everything else (broadcast rubrics, time messages, other pagers). Both are the
+same scrollable list/detail UI: Enter on an entry opens **Detail** (full text),
+q steps back, and **d** deletes the selected entry (the rest keep their order
+and the selection lands on the next one). **Diagnostics → Power** shows the live
+AXP192 currents (battery discharge, battery charge, and VBUS input).
+**Operations** offers **Reset** (reboot) and **Power Off** (AXP192 shutdown);
+each asks for an Enter confirmation before it acts.
 
 The static frame is drawn once at connect; most terminals reset the board on
 connect (you'll see it repaint), but if you attach without a reset and the

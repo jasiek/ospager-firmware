@@ -36,3 +36,7 @@ PowerReadings powerRead() {
   r.vbusMa      = PMU.getVbusCurrent();
   return r;
 }
+
+void powerOff() {
+  PMU.shutdown();
+}

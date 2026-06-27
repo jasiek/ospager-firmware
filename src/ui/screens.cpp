@@ -218,6 +218,29 @@ void MenuScreen::render(FrameBuffer& fb) {
   fb.putText(0, 7, "j/k sel  q back", STYLE_DIM);
 }
 
+// ------------------------------------------------------------- ConfirmScreen
+void ConfirmScreen::onInput(InputEvent ev, UiManager& ui) {
+  switch (ev) {
+    case InputEvent::Select:
+    case InputEvent::Right:
+      if (action_) action_();   // reset / power off: does not return
+      break;
+    case InputEvent::Back:
+    case InputEvent::Left:
+      ui.pop();
+      break;
+    default:
+      break;
+  }
+}
+
+void ConfirmScreen::render(FrameBuffer& fb) {
+  fb.putText(0, 0, title_, STYLE_BOLD);
+  fb.fillRow(1, '-');
+  fb.putTextCentered(3, prompt_);
+  fb.putText(0, 7, "enter ok  q back", STYLE_DIM);
+}
+
 // --------------------------------------------------------------- PowerScreen
 void PowerScreen::onInput(InputEvent ev, UiManager& ui) {
   if (ev == InputEvent::Back || ev == InputEvent::Left) ui.pop();

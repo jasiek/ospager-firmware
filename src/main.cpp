@@ -47,6 +47,15 @@ static MessagesScreen g_rubricsScreen(g_rubrics, "Rubrics");
 static DetailScreen   g_rubricsDetail(g_rubrics);
 static MenuScreen     g_diagMenu("Diagnostics");
 static PowerScreen    g_power;
+static MenuScreen     g_opsMenu("Operations");
+
+// One-shot operations. Free functions so the menu's action screens can take
+// their address; neither returns on real hardware.
+static void doReset()    { ESP.restart(); }
+static void doPowerOff() { powerOff(); }
+
+static ConfirmScreen  g_reset("Reset", "Reboot now?", &doReset);
+static ConfirmScreen  g_powerOff("Power Off", "Power off?", &doPowerOff);
 
 static void fatal(const char* msg) {
   Serial.println(msg);
@@ -72,12 +81,16 @@ void setup() {
   if (!g_pocsag.begin()) fatal("radio init failed. Halting.");
 
   // Navigation wiring:
-  //   Home -> Menu -> { Messages, Rubrics, Diagnostics -> Power }
+  //   Home -> Menu -> { Messages, Rubrics, Diagnostics -> Power,
+  //                     Operations -> { Reset, Power Off } }
   g_home.setMenuScreen(&g_mainMenu);
   g_mainMenu.addItem("Messages", &g_messagesScreen);
   g_mainMenu.addItem("Rubrics", &g_rubricsScreen);
   g_mainMenu.addItem("Diagnostics", &g_diagMenu);
+  g_mainMenu.addItem("Operations", &g_opsMenu);
   g_diagMenu.addItem("Power", &g_power);
+  g_opsMenu.addItem("Reset", &g_reset);
+  g_opsMenu.addItem("Power Off", &g_powerOff);
   g_messagesScreen.setDetailScreen(&g_messagesDetail);
   g_rubricsScreen.setDetailScreen(&g_rubricsDetail);
 

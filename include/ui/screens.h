@@ -44,6 +44,23 @@ class MenuScreen : public Screen {
   int         sel_ = 0;
 };
 
+// Confirms a one-shot operation (reset, power off) before running it. Select
+// invokes the action callback; Back returns to the menu without acting. The
+// action is not expected to return on real hardware.
+class ConfirmScreen : public Screen {
+ public:
+  ConfirmScreen(const char* title, const char* prompt, void (*action)())
+      : title_(title), prompt_(prompt), action_(action) {}
+
+  void onInput(InputEvent ev, UiManager& ui) override;
+  void render(FrameBuffer& fb) override;
+
+ private:
+  const char* title_;
+  const char* prompt_;
+  void (*action_)();
+};
+
 // Power: live AXP192 current readings (discharge / charge / VBUS in).
 class PowerScreen : public Screen {
  public:
